@@ -1,0 +1,11 @@
+c:\users\sarina\documents\visual studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\bin\Debug\JSLT_P1_200915291.exe.config
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.Form1.resources
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.Resources.resources
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.vbproj.GenerateResource.Cache
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\bin\Debug\JSLT_P1_200915291.exe
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\bin\Debug\JSLT_P1_200915291.pdb
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\bin\Debug\JSLT_P1_200915291.xml
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.vbprojResolveAssemblyReference.cache
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.exe
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.xml
+C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.pdb

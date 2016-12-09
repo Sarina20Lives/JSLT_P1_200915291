@@ -1,0 +1,241 @@
+﻿!----------------------------------------------------------------------------!
+!   EXPRESIONES REGULARES
+!----------------------------------------------------------------------------!
+
+{str}       =   {Printable} - ["]
+{ctr}       =   {Printable} - ['']             
+
+            
+!----------------------------------------------------------------------------!
+!   TERMINALES 
+!----------------------------------------------------------------------------!
+
+STRING      = '"' {str}* '"'
+CARACTER    = '''' {ctr} ''''
+ENTERO      = {Digit}+
+DOBLE       = {Digit}+ '.' {Digit}+  
+                 
+!----------------------------------------------------------------------------!
+!   CONFIGURACIONES
+!----------------------------------------------------------------------------!
+
+"Case Sensitive" = 'False'
+"Start Symbol"  = <lenguaje>
+
+!----------------------------------------------------------------------------!
+!   GRAMATICA 
+!----------------------------------------------------------------------------!
+
+<lenguaje>      ::=     <json>
+                 |      <jslt>
+
+!----------------------------------------------------------------------------!
+!   GRAMATICA - JSON
+!----------------------------------------------------------------------------!
+
+<json>          ::=     '{' <atributos> '}'
+      
+<atributos>     ::=     <atributos> ',' <atributo>
+                 |      <atributo>
+             
+<atributo>      ::=     STRING ':' <valjson>
+       
+<valjson>       ::=     <json>
+                 |      STRING
+                 |      '[' <array> ']'  
+                 
+<array>         ::=     <ljson>
+                 |      <lstring>
+ 
+<ljson>         ::=     <ljson> ',' <json>
+                 |      <json>
+                
+<lstring>       ::=     <lstring> ',' STRING
+                 |      STRING
+                 
+!----------------------------------------------------------------------------!
+!   GRAMATICA - JSLT
+!----------------------------------------------------------------------------!
+
+<jslt>          ::=     '<jsl:transformacion' 'ruta' '=' STRING 'version' '=' STRING '>' <cuerpo> '</jsl:final>'
+
+<cuerpo>        ::=     <sentencias>
+                 |      <plantilla>                 
+
+<sentencias>    ::=     <sentencia> <sentencias>
+                 |     
+                 
+<sentencia>     ::=     <declaracion>
+                 |      <asignacion>    
+                 |      <aplantilla>
+                 |      <for>
+                 |      <if>
+                 |      <switch>
+                 |      <html>
+           
+!----------------------------------------------------------------------------!
+!   Declaracion de variables
+
+<declaracion>   ::=     '<jsl:variable' <tipo> '=' <var> '/>'                
+
+<tipo>          ::=     'entero'
+                 |      'cadena'
+                 |      'boolean'
+                 |      'doble'
+                 |      'caracter'
+
+!----------------------------------------------------------------------------!
+!   Asignacion de variables
+
+<asignacion>    ::=     '<jsl:asignar' 'variable' '=' <var> 'valor' '=' <expresion> '/>'
+                                                                                      
+!----------------------------------------------------------------------------!
+!   Declaracion de plantillas
+
+<plantilla>     ::=     '<jsl:plantilla>' 'nombreObj' '=' <obj> '>' <sentencias> '</jsl:plantilla>'
+
+!----------------------------------------------------------------------------!
+!   Aplicar Plantilla
+
+<aplantilla>    ::=     '<jsl:plantilla-aplicar' 'seleccionar' '=' <obj> '/>'
+               
+!----------------------------------------------------------------------------!
+!   Obtener el valor de un objeto   
+               
+<getval>        ::=     '<jsl:valor-de' 'seleccionar' '=' <obj> '/>'
+
+!----------------------------------------------------------------------------!
+!   Bucle Para Cada                
+
+<for>           ::=     '<jsl:para-cada' 'seleccionar' '=' <obj> '>' <sentencias> '</jsl:para-cada>'
+
+!----------------------------------------------------------------------------!
+!   Flujo If                  
+
+<if>            ::=     '<jsl:if' 'condicion' '=' <expresion> '>' <sentencias> '</jsl:if>'
+
+!----------------------------------------------------------------------------!
+!   Flujo Switch                
+
+<switch>        ::=     '<jsl:en-caso>' <casos> '</jsl:en-caso>'
+
+<casos>         ::=     <caso> <casos>
+                 |      <default>
+                 |      <caso>
+
+<caso>          ::=     '<jsl:de' 'condicion' '=' <expresion> '>' <sentencias> '</jsl:de>'
+
+<default>       ::=     '<jsl:cualquier-otro>' <sentencias> '</jsl:cualquier-otro>'       
+
+!----------------------------------------------------------------------------!
+!   Variables
+
+<var>           ::=     ID '[' <dimensiones> ']'       
+                 |      ID                 
+
+<dimensiones>   ::=     <dimensiones> ',' <expresion>
+                 |      <expresion>
+
+!----------------------------------------------------------------------------!
+!   Objetos
+
+<obj>           ::=     <var> <ruta>
+                 |      <ruta>    
+                 |      '@'
+                 |      <var>                                  
+
+<ruta>          ::=     '@' <var> <ruta>
+                 |      '@@' <var> <ruta>          
+                 |      '@@' <var>
+                 |      '@' <var>                
+
+!----------------------------------------------------------------------------!
+!   Expresion
+
+<expresion>     ::=     <log1>
+                 
+<log1>          ::=     <log1> '||' <log2>
+                 |      <log1> '!||' <log2>
+                 |      <log1> '&|' <log2>
+                 |      <log2>
+
+<log2>          ::=     <log2> '&&' <log3>
+                 |      <log2> '!&&' <log3>
+                 |      <log3>
+                 
+<log3>          ::=     '!' <rel>
+                 |      <rel>
+                 
+<rel>           ::=     <rel> '==' <arit1>
+                 |      <rel> '!=' <arit1>
+                 |      <rel> '&lt' <arit1>
+                 |      <rel> '&lte' <arit1>
+                 |      <rel> '&gt' <arit1>
+                 |      <rel> '&gte' <arit1>
+                 |      <arit1>
+
+<arit1>         ::=     <arit1> '+' <arit2>
+                 |      <arit1> '-' <arit2>
+                 |      <arit2>                 
+
+<arit2>         ::=     <arit2> '*' <arit3>
+                 |      <arit2> 'div' <arit3>
+                 |      <arit2> '%' <arit3>
+                 |      <arit3>                 
+
+<arit3>         ::=     <arit3> '^' <unitario>
+                 |      <unitario>                 
+
+<unitario>      ::=     <getval>
+                 |      '!¡' <var>
+                 |      '++' <var> 
+                 |      '--' <var> 
+                 |      <var> '++'
+                 |      <var> '--'
+                 |      <var>
+                 |      <val>
+
+<val>           ::=     CARACTER
+                 |      STRING
+                 |      '-' <numero> 
+                 |      <numero>
+                 |      'true'
+                 |      'false'              
+                 
+<numero>        ::=     ENTERO
+                 |      DOBLE
+                 
+!----------------------------------------------------------------------------!
+!   GRAMATICA - HTML
+!----------------------------------------------------------------------------!
+
+<html>          ::=     '<html>' <sentencias> '</html>' 
+                 |      '<body>' <sentencias> '</body>'
+                 |      '<head>' <titulo> '</head>'
+                 |      '<h1>' <sentencias> '</h1>' 
+                 |      '<h2>' <sentencias> '</h2>' 
+                 |      '<h3>' <sentencias> '</h3>' 
+                 |      '<h4>' <sentencias> '</h4>' 
+                 |      '<h5>' <sentencias> '</h5>' 
+                 |      '<h6>' <sentencias> '</h6>'
+                 |      '<table' <propers> <filas> '</table>'
+                 |      '<p>' <sentencias> '</p>'
+                 |      '<b>' <sentencias> '</b>'
+                 |      '<i>' <sentencias> '</i>'
+
+<titulo>        ::=     '<title>' <sentencias> '</title>'
+                 |      <sentencias>
+                 
+<filas>         ::=     <filas> <fila>
+                 |      <fila>
+<fila>          ::=     '<tr' <propers> <columns> '</tr>'
+<columns>       ::=     <columns> <column>
+                 |      <column>                 
+<column>        ::=     '<th' <propers> <sentencias> '</th>'
+                 |      '<td' <propers> <sentencias> '</td>'                      
+<propers>       ::=     <proper> <propers>     
+                 |      '>'                 
+<proper>        ::=     'border' '=' STRING
+                 |      'bgcolor' '=' STRING
+                 |      'width' '=' STRING
+                 |      'height' '=' STRING
