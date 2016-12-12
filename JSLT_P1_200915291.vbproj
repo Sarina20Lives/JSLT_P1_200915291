@@ -74,6 +74,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="jslt_p1_200915291_general\Constantes.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -81,7 +82,29 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GramaticaJslt.vb" />
+    <Compile Include="jslt_p1_200915291_general\ManejoArchivos.vb" />
+    <Compile Include="jslt_p1_200915291_gramatica\GramaticaJslt.vb" />
+    <Compile Include="jslt_p1_200915291_interprete\Simbolo.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\Entorno.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Acceso.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Aritmetica.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Casteos.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\ComprobacionTipos.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Expresion.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Logica.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Relacional.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\expresion\Resultado.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\APlantilla.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\Asignar.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\Declarar.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\EtqHtml.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\FlujoIf.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\FlujoSwitch.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\BucleFor.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\GetVal.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\Plantilla.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\Sentencia.vb" />
+    <Compile Include="jslt_p1_200915291_jslt\sentencia_jslt\Transform.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -97,6 +120,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="jslt_p1_200915291_jslt\Nodo.vb" />
+    <Compile Include="jslt_p1_200915291_json\PtrJson.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
@@ -121,6 +146,7 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

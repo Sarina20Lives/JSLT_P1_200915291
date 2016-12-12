@@ -8,6 +8,7 @@
         Dim Cadena As System.IO.StringReader = New System.IO.StringReader(text)
         Setup()
         Parse(Cadena)
+
     End Sub
 
 End Class
