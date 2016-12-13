@@ -111,26 +111,6 @@
         Return nodo
     End Function
 
-    Public Function crearVar(ByVal subrol As Integer, ByVal cad As String, ByVal fila As Integer, ByVal column As Integer)
-        Dim nodo As Nodo = New Nodo
-        nodo.rol = Constantes.R_VAR
-        nodo.subrol = subrol
-        nodo.cad = cad
-        nodo.fila = fila
-        nodo.column = column
-        Return nodo
-    End Function
-
-    Public Function crearArr(ByVal subrol As Integer, ByVal cad As String, ByVal fila As Integer, ByVal column As Integer, ByVal posicion As Nodo)
-        Dim nodo As Nodo = New Nodo
-        nodo.rol = Constantes.R_ARR
-        nodo.subrol = subrol
-        nodo.cad = cad
-        nodo.fila = fila
-        nodo.column = column
-        nodo.hijos.Add(posicion)
-        Return nodo
-    End Function
 
     Public Function crearAcceso(ByVal subrol As Integer, ByVal cad As String, ByVal fila As Integer, ByVal column As Integer)
         Dim nodo As Nodo = New Nodo
@@ -139,6 +119,7 @@
         nodo.cad = cad
         nodo.fila = fila
         nodo.column = column
+        nodo.hijos = New ArrayList
         Return nodo
     End Function
 
@@ -146,26 +127,17 @@
         Dim nodo As Nodo = New Nodo
         nodo.rol = Constantes.R_ACCESO
         nodo.subrol = Constantes.SR_RUTA
-        nodo.cad = cad
         nodo.hijos = New ArrayList
         Return nodo
     End Function
 
-    Public Function predAcceso(ByVal acceso As Nodo, ByVal nodo As Nodo, ByVal subrol As Integer)
-        nodo.subrol = subrol
-        acceso.hijos.Insert(0, nodo)
-        Return acceso
-    End Function
+    Public Sub pred(ByVal hijo As Nodo)
+        Me.hijos.Insert(0, hijo)
+    End Sub
 
-    Public Function pred(ByVal padre As Nodo, ByVal hijo As Nodo)
-        padre.hijos.Insert(0, hijo)
-        Return padre
-    End Function
-
-    Public Function add(ByVal padre As Nodo, ByVal hijo As Nodo)
-        padre.hijos.Add(hijo)
-        Return padre
-    End Function
+    Public Sub add(ByVal hijo As Nodo)
+        Me.hijos.Add(hijo)
+    End Sub
 
     Public Function crearJSL(ByVal subrol As Integer, ByVal cad As String, ByVal fila As Integer, ByVal column As Integer, ByVal hijos As ArrayList)
         Dim nodo As Nodo = New Nodo

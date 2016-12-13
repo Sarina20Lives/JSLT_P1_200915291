@@ -2,6 +2,13 @@
 
 
 
+    Public Function leer(ByVal directorio As String)
+        Dim contActual As String = ""
+        Dim sr As New System.IO.StreamReader(Constantes.DIRECTORIO)
+        contActual = sr.ReadToEnd()
+        sr.Close()
+        Return contActual
+    End Function
 
     Public Sub escribirHtml(ByVal contNuevo As String)
         Dim sw As New System.IO.StreamWriter(Constantes.DIRECTORIO)

@@ -7,8 +7,18 @@
     Public Sub EvaluarCadena(ByVal text As String)
         Dim Cadena As System.IO.StringReader = New System.IO.StringReader(text)
         Setup()
-        Parse(Cadena)
-
+        'false = json, true = jslt
+        Dim analisis As Boolean = False
+        Dim direccion As String = ""
+        Dim raizJsl As Nodo = New Nodo
+        Dim raizJson As PtrJson = New PtrJson
+        Parse(Cadena, analisis, raizJson, raizJsl, direccion)
+        If (analisis) Then
+            Dim transform As Transform = New Transform
+            transform.resolverTransform(raizJsl)
+            Return
+        End If
+        MsgBox(raizJson.nombre)
     End Sub
 
 End Class

@@ -9,11 +9,12 @@ Imports System.Windows.Forms
 
 Module MyParser
     Private Parser As New GOLD.Parser
+
     'false = json, true = jslt
     Public analisis As Boolean = False
     Public direccion As String = ""
-    Public raizJsl As Nodo
-    Public raizJson As PtrJson
+    Public raizJsl As Nodo = New Nodo
+    Public raizJson As PtrJson = New PtrJson
 
     Private Enum SymbolIndex
         [Eof] = 0                                 ' (EOF)
@@ -140,185 +141,182 @@ Module MyParser
         [Arit1] = 121                             ' <arit1>
         [Arit2] = 122                             ' <arit2>
         [Arit3] = 123                             ' <arit3>
-        [Array] = 124                             ' <array>
-        [Asignacion] = 125                        ' <asignacion>
-        [Atributo] = 126                          ' <atributo>
-        [Atributos] = 127                         ' <atributos>
-        [Bfor] = 128                              ' <bfor>
-        [Caso] = 129                              ' <caso>
-        [Casos] = 130                             ' <casos>
-        [Column] = 131                            ' <column>
-        [Columns] = 132                           ' <columns>
-        [Cuerpo] = 133                            ' <cuerpo>
-        [Declaracion] = 134                       ' <declaracion>
-        [Defecto] = 135                           ' <defecto>
-        [Etqhtml] = 136                           ' <etqhtml>
-        [Expresion] = 137                         ' <expresion>
-        [Fif] = 138                               ' <fif>
-        [Fila] = 139                              ' <fila>
-        [Filas] = 140                             ' <filas>
-        [Fswitch] = 141                           ' <fswitch>
-        [Getval] = 142                            ' <getval>
-        [Jslt] = 143                              ' <jslt>
-        [Json] = 144                              ' <json>
-        [Lenguaje] = 145                          ' <lenguaje>
-        [Ljson] = 146                             ' <ljson>
+        [Asignacion] = 124                        ' <asignacion>
+        [Atbjs] = 125                             ' <atbJS>
+        [Atbsjs] = 126                            ' <atbsJS>
+        [Bfor] = 127                              ' <bfor>
+        [Caso] = 128                              ' <caso>
+        [Casos] = 129                             ' <casos>
+        [Column] = 130                            ' <column>
+        [Columns] = 131                           ' <columns>
+        [Cuerpo] = 132                            ' <cuerpo>
+        [Declaracion] = 133                       ' <declaracion>
+        [Defecto] = 134                           ' <defecto>
+        [Etqhtml] = 135                           ' <etqhtml>
+        [Expresion] = 136                         ' <expresion>
+        [Fif] = 137                               ' <fif>
+        [Fila] = 138                              ' <fila>
+        [Filas] = 139                             ' <filas>
+        [Fswitch] = 140                           ' <fswitch>
+        [Getval] = 141                            ' <getval>
+        [Jslt] = 142                              ' <jslt>
+        [Json] = 143                              ' <json>
+        [Lenguaje] = 144                          ' <lenguaje>
+        [Llajs] = 145                             ' <llaJS>
+        [Llasjs] = 146                            ' <llasJS>
         [Log1] = 147                              ' <log1>
         [Log2] = 148                              ' <log2>
         [Log3] = 149                              ' <log3>
-        [Lstring] = 150                           ' <lstring>
-        [Numero] = 151                            ' <numero>
-        [Obj] = 152                               ' <obj>
-        [Plantilla] = 153                         ' <plantilla>
-        [Proper] = 154                            ' <proper>
-        [Propers] = 155                           ' <propers>
-        [Rel] = 156                               ' <rel>
-        [Ruta2] = 157                             ' <ruta>
-        [Sentencia] = 158                         ' <sentencia>
-        [Sentencias] = 159                        ' <sentencias>
-        [Tipo] = 160                              ' <tipo>
-        [Titulo] = 161                            ' <titulo>
-        [Unitario] = 162                          ' <unitario>
-        [Val] = 163                               ' <val>
-        [Valasig] = 164                           ' <valAsig>
-        [Valjson] = 165                           ' <valjson>
+        [Numero] = 150                            ' <numero>
+        [Obj] = 151                               ' <obj>
+        [Objjs] = 152                             ' <objJS>
+        [Objsjs] = 153                            ' <objsJS>
+        [Plantilla] = 154                         ' <plantilla>
+        [Proper] = 155                            ' <proper>
+        [Propers] = 156                           ' <propers>
+        [Rel] = 157                               ' <rel>
+        [Ruta2] = 158                             ' <ruta>
+        [Sentencia] = 159                         ' <sentencia>
+        [Sentencias] = 160                        ' <sentencias>
+        [Tipo] = 161                              ' <tipo>
+        [Titulo] = 162                            ' <titulo>
+        [Unitario] = 163                          ' <unitario>
+        [Val] = 164                               ' <val>
+        [Valasig] = 165                           ' <valAsig>
         [Var] = 166                               ' <var>
     End Enum
 
     Private Enum ProductionIndex
         [Lenguaje] = 0                            ' <lenguaje> ::= <json>
         [Lenguaje2] = 1                           ' <lenguaje> ::= <jslt>
-        [Json_Lbrace_Rbrace] = 2                  ' <json> ::= '{' <atributos> '}'
-        [Atributos_Comma] = 3                     ' <atributos> ::= <atributos> ',' <atributo>
-        [Atributos] = 4                           ' <atributos> ::= <atributo>
-        [Atributo_String_Colon] = 5               ' <atributo> ::= STRING ':' <valjson>
-        [Valjson] = 6                             ' <valjson> ::= <json>
-        [Valjson_String] = 7                      ' <valjson> ::= STRING
-        [Valjson_Lbracket_Rbracket] = 8           ' <valjson> ::= '[' <array> ']'
-        [Array] = 9                               ' <array> ::= <ljson>
-        [Array2] = 10                             ' <array> ::= <lstring>
-        [Ljson_Comma] = 11                        ' <ljson> ::= <ljson> ',' <json>
-        [Ljson] = 12                              ' <ljson> ::= <json>
-        [Lstring_Comma_String] = 13               ' <lstring> ::= <lstring> ',' STRING
-        [Lstring_String] = 14                     ' <lstring> ::= STRING
-        [Jslt_Ltjslcolontransformacion_Ruta_Eq_String_Version_Eq_String_Gt_Ltdivjslcolonfinalgt] = 15 ' <jslt> ::= '<jsl:transformacion' ruta '=' STRING version '=' STRING '>' <cuerpo> '</jsl:final>'
-        [Cuerpo] = 16                             ' <cuerpo> ::= <declaracion> <cuerpo>
-        [Cuerpo2] = 17                            ' <cuerpo> ::= <plantilla> <cuerpo>
-        [Cuerpo3] = 18                            ' <cuerpo> ::= 
-        [Sentencias] = 19                         ' <sentencias> ::= <sentencia> <sentencias>
-        [Sentencias2] = 20                        ' <sentencias> ::= 
-        [Sentencia] = 21                          ' <sentencia> ::= <declaracion>
-        [Sentencia2] = 22                         ' <sentencia> ::= <asignacion>
-        [Sentencia3] = 23                         ' <sentencia> ::= <aplantilla>
-        [Sentencia4] = 24                         ' <sentencia> ::= <getval>
-        [Sentencia5] = 25                         ' <sentencia> ::= <bfor>
-        [Sentencia6] = 26                         ' <sentencia> ::= <fif>
-        [Sentencia7] = 27                         ' <sentencia> ::= <fswitch>
-        [Sentencia8] = 28                         ' <sentencia> ::= <etqhtml>
-        [Declaracion_Ltjslcolonvariable_Eq_Id_Divgt] = 29 ' <declaracion> ::= '<jsl:variable' <tipo> '=' ID '/>'
-        [Tipo_Entero] = 30                        ' <tipo> ::= entero
-        [Tipo_Cadena] = 31                        ' <tipo> ::= cadena
-        [Tipo_Boolean] = 32                       ' <tipo> ::= boolean
-        [Tipo_Doble] = 33                         ' <tipo> ::= doble
-        [Tipo_Caracter] = 34                      ' <tipo> ::= caracter
-        [Asignacion_Ltjslcolonasignar_Variable_Eq_Id_Valor_Divgt] = 35 ' <asignacion> ::= '<jsl:asignar' variable '=' ID valor <valAsig> '/>'
-        [Valasig_Eq] = 36                         ' <valAsig> ::= '=' <expresion>
-        [Valasig_Pluseq] = 37                     ' <valAsig> ::= '+=' <expresion>
-        [Valasig_Plusplus] = 38                   ' <valAsig> ::= '++'
-        [Valasig_Minusminus] = 39                 ' <valAsig> ::= '--'
-        [Plantilla_Ltjslcolonplantilla_Nombreobj_Eq_Gt_Ltdivjslcolonplantillagt] = 40 ' <plantilla> ::= '<jsl:plantilla' nombreObj '=' <obj> '>' <sentencias> '</jsl:plantilla>'
-        [Aplantilla_Ltjslcolonplantillaminusaplicar_Seleccionar_Eq_Divgt] = 41 ' <aplantilla> ::= '<jsl:plantilla-aplicar' seleccionar '=' <obj> '/>'
-        [Getval_Ltjslcolonvalorminusde_Seleccionar_Eq_Divgt] = 42 ' <getval> ::= '<jsl:valor-de' seleccionar '=' <obj> '/>'
-        [Bfor_Ltjslcolonparaminuscada_Seleccionar_Eq_Gt_Ltdivjslcolonparaminuscadagt] = 43 ' <bfor> ::= '<jsl:para-cada' seleccionar '=' <obj> '>' <sentencias> '</jsl:para-cada>'
-        [Fif_Ltjslcolonif_Condicion_Eq_Gt_Ltdivjslcolonifgt] = 44 ' <fif> ::= '<jsl:if' condicion '=' <expresion> '>' <sentencias> '</jsl:if>'
-        [Fswitch_Ltjslcolonenminuscasogt_Ltdivjslcolonenminuscasogt] = 45 ' <fswitch> ::= '<jsl:en-caso>' <casos> '</jsl:en-caso>'
-        [Casos] = 46                              ' <casos> ::= <caso> <casos>
-        [Casos2] = 47                             ' <casos> ::= <defecto>
-        [Casos3] = 48                             ' <casos> ::= <caso>
-        [Caso_Ltjslcolonde_Condicion_Eq_Gt_Ltdivjslcolondegt] = 49 ' <caso> ::= '<jsl:de' condicion '=' <expresion> '>' <sentencias> '</jsl:de>'
-        [Defecto_Ltjslcoloncualquierminusotrogt_Ltdivjslcoloncualquierminusotrogt] = 50 ' <defecto> ::= '<jsl:cualquier-otro>' <sentencias> '</jsl:cualquier-otro>'
-        [Obj] = 51                                ' <obj> ::= <var> <ruta>
-        [Obj_Atat] = 52                           ' <obj> ::= '@@' <var> <ruta>
-        [Obj_At] = 53                             ' <obj> ::= '@' <var> <ruta>
-        [Obj_At2] = 54                            ' <obj> ::= '@'
-        [Obj_Dotdot] = 55                         ' <obj> ::= '..'
-        [Obj_Dot] = 56                            ' <obj> ::= '.'
-        [Ruta_At] = 57                            ' <ruta> ::= '@' <var> <ruta>
-        [Ruta_Atat] = 58                          ' <ruta> ::= '@@' <var> <ruta>
-        [Ruta] = 59                               ' <ruta> ::= 
-        [Var_Id_Lbracket_Rbracket] = 60           ' <var> ::= ID '[' <expresion> ']'
-        [Var_Id] = 61                             ' <var> ::= ID
-        [Expresion] = 62                          ' <expresion> ::= <log1>
-        [Log1_Pipepipe] = 63                      ' <log1> ::= <log1> '||' <log2>
-        [Log1_Exclampipepipe] = 64                ' <log1> ::= <log1> '!||' <log2>
-        [Log1_Amppipe] = 65                       ' <log1> ::= <log1> '&|' <log2>
-        [Log1] = 66                               ' <log1> ::= <log2>
-        [Log2_Ampamp] = 67                        ' <log2> ::= <log2> '&&' <log3>
-        [Log2_Exclamampamp] = 68                  ' <log2> ::= <log2> '!&&' <log3>
-        [Log2] = 69                               ' <log2> ::= <log3>
-        [Log3_Exclam] = 70                        ' <log3> ::= '!' <rel>
-        [Log3] = 71                               ' <log3> ::= <rel>
-        [Rel_Eqeq] = 72                           ' <rel> ::= <rel> '==' <arit1>
-        [Rel_Exclameq] = 73                       ' <rel> ::= <rel> '!=' <arit1>
-        [Rel_Amplt] = 74                          ' <rel> ::= <rel> '&lt' <arit1>
-        [Rel_Amplte] = 75                         ' <rel> ::= <rel> '&lte' <arit1>
-        [Rel_Ampgt] = 76                          ' <rel> ::= <rel> '&gt' <arit1>
-        [Rel_Ampgte] = 77                         ' <rel> ::= <rel> '&gte' <arit1>
-        [Rel] = 78                                ' <rel> ::= <arit1>
-        [Arit1_Plus] = 79                         ' <arit1> ::= <arit1> '+' <arit2>
-        [Arit1_Minus] = 80                        ' <arit1> ::= <arit1> '-' <arit2>
-        [Arit1] = 81                              ' <arit1> ::= <arit2>
-        [Arit2_Times] = 82                        ' <arit2> ::= <arit2> '*' <arit3>
-        [Arit2_Div] = 83                          ' <arit2> ::= <arit2> div <arit3>
-        [Arit2_Percent] = 84                      ' <arit2> ::= <arit2> '%' <arit3>
-        [Arit2] = 85                              ' <arit2> ::= <arit3>
-        [Arit3_Caret] = 86                        ' <arit3> ::= <arit3> '^' <unitario>
-        [Arit3] = 87                              ' <arit3> ::= <unitario>
-        [Unitario] = 88                           ' <unitario> ::= <getval>
-        [Unitario_Exclamnulo_Id] = 89             ' <unitario> ::= '!¡' ID
-        [Unitario_Plusplus_Id] = 90               ' <unitario> ::= '++' ID
-        [Unitario_Minusminus_Id] = 91             ' <unitario> ::= '--' ID
-        [Unitario_Id_Plusplus] = 92               ' <unitario> ::= ID '++'
-        [Unitario_Id_Minusminus] = 93             ' <unitario> ::= ID '--'
-        [Unitario2] = 94                          ' <unitario> ::= <val>
-        [Val_Lparen_Rparen] = 95                  ' <val> ::= '(' <log1> ')'
-        [Val] = 96                                ' <val> ::= <obj>
-        [Val_Char] = 97                           ' <val> ::= CHAR
-        [Val_String] = 98                         ' <val> ::= STRING
-        [Val_Minus] = 99                          ' <val> ::= '-' <numero>
-        [Val2] = 100                              ' <val> ::= <numero>
-        [Val_True] = 101                          ' <val> ::= true
-        [Val_False] = 102                         ' <val> ::= false
-        [Numero_Int] = 103                        ' <numero> ::= INT
-        [Numero_Double] = 104                     ' <numero> ::= DOUBLE
-        [Etqhtml_Lthtmlgt_Ltdivhtmlgt] = 105      ' <etqhtml> ::= '<html>' <sentencias> '</html>'
-        [Etqhtml_Ltbodygt_Ltdivbodygt] = 106      ' <etqhtml> ::= '<body>' <sentencias> '</body>'
-        [Etqhtml_Ltheadgt_Ltdivheadgt] = 107      ' <etqhtml> ::= '<head>' <titulo> '</head>'
-        [Etqhtml_Lth1gt_Ltdivh1gt] = 108          ' <etqhtml> ::= '<h1>' <sentencias> '</h1>'
-        [Etqhtml_Lth2gt_Ltdivh2gt] = 109          ' <etqhtml> ::= '<h2>' <sentencias> '</h2>'
-        [Etqhtml_Lth3gt_Ltdivh3gt] = 110          ' <etqhtml> ::= '<h3>' <sentencias> '</h3>'
-        [Etqhtml_Lth4gt_Ltdivh4gt] = 111          ' <etqhtml> ::= '<h4>' <sentencias> '</h4>'
-        [Etqhtml_Lth5gt_Ltdivh5gt] = 112          ' <etqhtml> ::= '<h5>' <sentencias> '</h5>'
-        [Etqhtml_Lth6gt_Ltdivh6gt] = 113          ' <etqhtml> ::= '<h6>' <sentencias> '</h6>'
-        [Etqhtml_Lttable_Ltdivtablegt] = 114      ' <etqhtml> ::= '<table' <propers> <filas> '</table>'
-        [Etqhtml_Ltpgt_Ltdivpgt] = 115            ' <etqhtml> ::= '<p>' <sentencias> '</p>'
-        [Etqhtml_Ltbgt_Ltdivbgt] = 116            ' <etqhtml> ::= '<b>' <sentencias> '</b>'
-        [Etqhtml_Ltigt_Ltdivigt] = 117            ' <etqhtml> ::= '<i>' <sentencias> '</i>'
-        [Titulo_Lttitlegt_Ltdivtitlegt] = 118     ' <titulo> ::= '<title>' <sentencias> '</title>'
-        [Titulo] = 119                            ' <titulo> ::= <sentencias>
-        [Filas] = 120                             ' <filas> ::= <fila> <filas>
-        [Filas2] = 121                            ' <filas> ::= 
-        [Fila_Lttr_Ltdivtrgt] = 122               ' <fila> ::= '<tr' <propers> <columns> '</tr>'
-        [Columns] = 123                           ' <columns> ::= <column> <columns>
-        [Columns2] = 124                          ' <columns> ::= 
-        [Column_Ltth_Ltdivthgt] = 125             ' <column> ::= '<th' <propers> <sentencias> '</th>'
-        [Column_Lttd_Ltdivtdgt] = 126             ' <column> ::= '<td' <propers> <sentencias> '</td>'
-        [Propers] = 127                           ' <propers> ::= <proper> <propers>
-        [Propers_Gt] = 128                        ' <propers> ::= '>'
-        [Proper_Border_Eq_String] = 129           ' <proper> ::= border '=' STRING
-        [Proper_Bgcolor_Eq_String] = 130          ' <proper> ::= bgcolor '=' STRING
-        [Proper_Width_Eq_String] = 131            ' <proper> ::= width '=' STRING
-        [Proper_Height_Eq_String] = 132           ' <proper> ::= height '=' STRING
+        [Json_Lbrace_String_Colon_Lbrace_Rbrace_Rbrace] = 2 ' <json> ::= '{' STRING ':' '{' <objsJS> '}' '}'
+        [Objsjs_Comma] = 3                        ' <objsJS> ::= <objsJS> ',' <objJS>
+        [Objsjs] = 4                              ' <objsJS> ::= <objJS>
+        [Objjs_String_Colon_Lbracket_Rbracket] = 5 ' <objJS> ::= STRING ':' '[' <llasJS> ']'
+        [Llasjs_Comma] = 6                        ' <llasJS> ::= <llasJS> ',' <llaJS>
+        [Llasjs] = 7                              ' <llasJS> ::= <llaJS>
+        [Llajs_Lbrace_Rbrace] = 8                 ' <llaJS> ::= '{' <atbsJS> '}'
+        [Atbsjs_Comma] = 9                        ' <atbsJS> ::= <atbsJS> ',' <atbJS>
+        [Atbsjs] = 10                             ' <atbsJS> ::= <atbJS>
+        [Atbjs_String_Colon_String] = 11          ' <atbJS> ::= STRING ':' STRING
+        [Jslt_Ltjslcolontransformacion_Ruta_Eq_String_Version_Eq_String_Gt_Ltdivjslcolonfinalgt] = 12 ' <jslt> ::= '<jsl:transformacion' ruta '=' STRING version '=' STRING '>' <cuerpo> '</jsl:final>'
+        [Cuerpo] = 13                             ' <cuerpo> ::= <declaracion> <cuerpo>
+        [Cuerpo2] = 14                            ' <cuerpo> ::= <plantilla> <cuerpo>
+        [Cuerpo3] = 15                            ' <cuerpo> ::= 
+        [Sentencias] = 16                         ' <sentencias> ::= <sentencia> <sentencias>
+        [Sentencias2] = 17                        ' <sentencias> ::= 
+        [Sentencia] = 18                          ' <sentencia> ::= <declaracion>
+        [Sentencia2] = 19                         ' <sentencia> ::= <asignacion>
+        [Sentencia3] = 20                         ' <sentencia> ::= <aplantilla>
+        [Sentencia4] = 21                         ' <sentencia> ::= <getval>
+        [Sentencia5] = 22                         ' <sentencia> ::= <bfor>
+        [Sentencia6] = 23                         ' <sentencia> ::= <fif>
+        [Sentencia7] = 24                         ' <sentencia> ::= <fswitch>
+        [Sentencia8] = 25                         ' <sentencia> ::= <etqhtml>
+        [Declaracion_Ltjslcolonvariable_Eq_Id_Divgt] = 26 ' <declaracion> ::= '<jsl:variable' <tipo> '=' ID '/>'
+        [Tipo_Entero] = 27                        ' <tipo> ::= entero
+        [Tipo_Cadena] = 28                        ' <tipo> ::= cadena
+        [Tipo_Boolean] = 29                       ' <tipo> ::= boolean
+        [Tipo_Doble] = 30                         ' <tipo> ::= doble
+        [Tipo_Caracter] = 31                      ' <tipo> ::= caracter
+        [Asignacion_Ltjslcolonasignar_Variable_Eq_Id_Valor_Divgt] = 32 ' <asignacion> ::= '<jsl:asignar' variable '=' ID valor <valAsig> '/>'
+        [Valasig_Eq] = 33                         ' <valAsig> ::= '=' <expresion>
+        [Valasig_Pluseq] = 34                     ' <valAsig> ::= '+=' <expresion>
+        [Valasig_Plusplus] = 35                   ' <valAsig> ::= '++'
+        [Valasig_Minusminus] = 36                 ' <valAsig> ::= '--'
+        [Plantilla_Ltjslcolonplantilla_Nombreobj_Eq_Gt_Ltdivjslcolonplantillagt] = 37 ' <plantilla> ::= '<jsl:plantilla' nombreObj '=' <obj> '>' <sentencias> '</jsl:plantilla>'
+        [Aplantilla_Ltjslcolonplantillaminusaplicar_Seleccionar_Eq_Divgt] = 38 ' <aplantilla> ::= '<jsl:plantilla-aplicar' seleccionar '=' <obj> '/>'
+        [Getval_Ltjslcolonvalorminusde_Seleccionar_Eq_Divgt] = 39 ' <getval> ::= '<jsl:valor-de' seleccionar '=' <obj> '/>'
+        [Bfor_Ltjslcolonparaminuscada_Seleccionar_Eq_Gt_Ltdivjslcolonparaminuscadagt] = 40 ' <bfor> ::= '<jsl:para-cada' seleccionar '=' <obj> '>' <sentencias> '</jsl:para-cada>'
+        [Fif_Ltjslcolonif_Condicion_Eq_Gt_Ltdivjslcolonifgt] = 41 ' <fif> ::= '<jsl:if' condicion '=' <expresion> '>' <sentencias> '</jsl:if>'
+        [Fswitch_Ltjslcolonenminuscasogt_Ltdivjslcolonenminuscasogt] = 42 ' <fswitch> ::= '<jsl:en-caso>' <casos> '</jsl:en-caso>'
+        [Casos] = 43                              ' <casos> ::= <caso> <casos>
+        [Casos2] = 44                             ' <casos> ::= <defecto>
+        [Casos3] = 45                             ' <casos> ::= <caso>
+        [Caso_Ltjslcolonde_Condicion_Eq_Gt_Ltdivjslcolondegt] = 46 ' <caso> ::= '<jsl:de' condicion '=' <expresion> '>' <sentencias> '</jsl:de>'
+        [Defecto_Ltjslcoloncualquierminusotrogt_Ltdivjslcoloncualquierminusotrogt] = 47 ' <defecto> ::= '<jsl:cualquier-otro>' <sentencias> '</jsl:cualquier-otro>'
+        [Obj] = 48                                ' <obj> ::= <var>
+        [Obj_Atat_Id] = 49                        ' <obj> ::= '@@' ID
+        [Obj_At_Id] = 50                          ' <obj> ::= '@' ID <ruta>
+        [Obj_At] = 51                             ' <obj> ::= '@'
+        [Obj_Dotdot] = 52                         ' <obj> ::= '..'
+        [Obj_Dot] = 53                            ' <obj> ::= '.'
+        [Ruta_At_Id] = 54                         ' <ruta> ::= '@' ID <ruta>
+        [Ruta_At_Id_Lbracket_Rbracket] = 55       ' <ruta> ::= '@' ID '[' <expresion> ']'
+        [Ruta] = 56                               ' <ruta> ::= 
+        [Var_Id_Lbracket_Rbracket] = 57           ' <var> ::= ID '[' <expresion> ']'
+        [Var_Id] = 58                             ' <var> ::= ID
+        [Expresion] = 59                          ' <expresion> ::= <log1>
+        [Log1_Pipepipe] = 60                      ' <log1> ::= <log1> '||' <log2>
+        [Log1_Exclampipepipe] = 61                ' <log1> ::= <log1> '!||' <log2>
+        [Log1_Amppipe] = 62                       ' <log1> ::= <log1> '&|' <log2>
+        [Log1] = 63                               ' <log1> ::= <log2>
+        [Log2_Ampamp] = 64                        ' <log2> ::= <log2> '&&' <log3>
+        [Log2_Exclamampamp] = 65                  ' <log2> ::= <log2> '!&&' <log3>
+        [Log2] = 66                               ' <log2> ::= <log3>
+        [Log3_Exclam] = 67                        ' <log3> ::= '!' <rel>
+        [Log3] = 68                               ' <log3> ::= <rel>
+        [Rel_Eqeq] = 69                           ' <rel> ::= <rel> '==' <arit1>
+        [Rel_Exclameq] = 70                       ' <rel> ::= <rel> '!=' <arit1>
+        [Rel_Amplt] = 71                          ' <rel> ::= <rel> '&lt' <arit1>
+        [Rel_Amplte] = 72                         ' <rel> ::= <rel> '&lte' <arit1>
+        [Rel_Ampgt] = 73                          ' <rel> ::= <rel> '&gt' <arit1>
+        [Rel_Ampgte] = 74                         ' <rel> ::= <rel> '&gte' <arit1>
+        [Rel] = 75                                ' <rel> ::= <arit1>
+        [Arit1_Plus] = 76                         ' <arit1> ::= <arit1> '+' <arit2>
+        [Arit1_Minus] = 77                        ' <arit1> ::= <arit1> '-' <arit2>
+        [Arit1] = 78                              ' <arit1> ::= <arit2>
+        [Arit2_Times] = 79                        ' <arit2> ::= <arit2> '*' <arit3>
+        [Arit2_Div] = 80                          ' <arit2> ::= <arit2> div <arit3>
+        [Arit2_Percent] = 81                      ' <arit2> ::= <arit2> '%' <arit3>
+        [Arit2] = 82                              ' <arit2> ::= <arit3>
+        [Arit3_Caret] = 83                        ' <arit3> ::= <arit3> '^' <unitario>
+        [Arit3] = 84                              ' <arit3> ::= <unitario>
+        [Unitario] = 85                           ' <unitario> ::= <getval>
+        [Unitario_Exclamnulo_Id] = 86                ' <unitario> ::= '!¡' ID
+        [Unitario_Plusplus_Id] = 87               ' <unitario> ::= '++' ID
+        [Unitario_Minusminus_Id] = 88             ' <unitario> ::= '--' ID
+        [Unitario_Id_Plusplus] = 89               ' <unitario> ::= ID '++'
+        [Unitario_Id_Minusminus] = 90             ' <unitario> ::= ID '--'
+        [Unitario2] = 91                          ' <unitario> ::= <val>
+        [Val_Lparen_Rparen] = 92                  ' <val> ::= '(' <log1> ')'
+        [Val] = 93                                ' <val> ::= <obj>
+        [Val_Char] = 94                           ' <val> ::= CHAR
+        [Val_String] = 95                         ' <val> ::= STRING
+        [Val_Minus] = 96                          ' <val> ::= '-' <numero>
+        [Val2] = 97                               ' <val> ::= <numero>
+        [Val_True] = 98                           ' <val> ::= true
+        [Val_False] = 99                          ' <val> ::= false
+        [Numero_Int] = 100                        ' <numero> ::= INT
+        [Numero_Double] = 101                     ' <numero> ::= DOUBLE
+        [Etqhtml_Lthtmlgt_Ltdivhtmlgt] = 102      ' <etqhtml> ::= '<html>' <sentencias> '</html>'
+        [Etqhtml_Ltbodygt_Ltdivbodygt] = 103      ' <etqhtml> ::= '<body>' <sentencias> '</body>'
+        [Etqhtml_Ltheadgt_Ltdivheadgt] = 104      ' <etqhtml> ::= '<head>' <titulo> '</head>'
+        [Etqhtml_Lth1gt_Ltdivh1gt] = 105          ' <etqhtml> ::= '<h1>' <sentencias> '</h1>'
+        [Etqhtml_Lth2gt_Ltdivh2gt] = 106          ' <etqhtml> ::= '<h2>' <sentencias> '</h2>'
+        [Etqhtml_Lth3gt_Ltdivh3gt] = 107          ' <etqhtml> ::= '<h3>' <sentencias> '</h3>'
+        [Etqhtml_Lth4gt_Ltdivh4gt] = 108          ' <etqhtml> ::= '<h4>' <sentencias> '</h4>'
+        [Etqhtml_Lth5gt_Ltdivh5gt] = 109          ' <etqhtml> ::= '<h5>' <sentencias> '</h5>'
+        [Etqhtml_Lth6gt_Ltdivh6gt] = 110          ' <etqhtml> ::= '<h6>' <sentencias> '</h6>'
+        [Etqhtml_Lttable_Ltdivtablegt] = 111      ' <etqhtml> ::= '<table' <propers> <filas> '</table>'
+        [Etqhtml_Ltpgt_Ltdivpgt] = 112            ' <etqhtml> ::= '<p>' <sentencias> '</p>'
+        [Etqhtml_Ltbgt_Ltdivbgt] = 113            ' <etqhtml> ::= '<b>' <sentencias> '</b>'
+        [Etqhtml_Ltigt_Ltdivigt] = 114            ' <etqhtml> ::= '<i>' <sentencias> '</i>'
+        [Titulo_Lttitlegt_Ltdivtitlegt] = 115     ' <titulo> ::= '<title>' <sentencias> '</title>'
+        [Titulo] = 116                            ' <titulo> ::= <sentencias>
+        [Filas] = 117                             ' <filas> ::= <fila> <filas>
+        [Filas2] = 118                            ' <filas> ::= 
+        [Fila_Lttr_Ltdivtrgt] = 119               ' <fila> ::= '<tr' <propers> <columns> '</tr>'
+        [Columns] = 120                           ' <columns> ::= <column> <columns>
+        [Columns2] = 121                          ' <columns> ::= 
+        [Column_Ltth_Ltdivthgt] = 122             ' <column> ::= '<th' <propers> <sentencias> '</th>'
+        [Column_Lttd_Ltdivtdgt] = 123             ' <column> ::= '<td' <propers> <sentencias> '</td>'
+        [Propers] = 124                           ' <propers> ::= <proper> <propers>
+        [Propers_Gt] = 125                        ' <propers> ::= '>'
+        [Proper_Border_Eq_String] = 126           ' <proper> ::= border '=' STRING
+        [Proper_Bgcolor_Eq_String] = 127          ' <proper> ::= bgcolor '=' STRING
+        [Proper_Width_Eq_String] = 128            ' <proper> ::= width '=' STRING
+        [Proper_Height_Eq_String] = 129           ' <proper> ::= height '=' STRING
     End Enum
 
 
@@ -331,7 +329,7 @@ Module MyParser
         Parser.LoadTables(Path.Combine(Application.StartupPath, "GramaticaJslt.egt"))
     End Sub
 
-    Public Function Parse(ByVal Reader As TextReader) As Boolean
+    Public Function Parse(ByVal Reader As TextReader, ByRef camino As Boolean, ByRef rJson As PtrJson, ByRef rJsl As Nodo, ByRef dir As String) As Boolean
         'This procedure starts the GOLD Parser Engine and handles each of the
         'messages it returns. Each time a reduction is made, you can create new
         'custom object and reassign the .CurrentReduction property. Otherwise, 
@@ -372,8 +370,10 @@ Module MyParser
                     'Accepted!
                     'Program = Parser.CurrentReduction  'The root node!                 
                     MsgBox("Análisis exitoso")
-                    Dim transform As Transform = New Transform
-                    transform.resolverTransform(raizJsl)
+                    camino = analisis
+                    rJsl = raizJsl
+                    rJson = raizJson
+                    direccion = dir
                     Done = True
                     Accepted = True
 
@@ -411,83 +411,84 @@ Module MyParser
                 Case ProductionIndex.Lenguaje2
                     ' <lenguaje> ::= <jslt> 
 
-                Case ProductionIndex.Json_Lbrace_Rbrace
-                    ' <json> ::= '{' <atributos> '}' 
-                    ptr = New PtrJson
-                    ptr = ptr.crearArr(Constantes.R_JSLLA, "{}", .Item(0).Position.Line, .Item(0).Position.Column, CType(.Item(1).Data, ArrayList))
+           Case ProductionIndex.Json_Lbrace_String_Colon_Lbrace_Rbrace_Rbrace                 
+                    ' <json> ::= '{' STRING ':' '{' <objsJS> '}' '}' 
+                    analisis = False
                     raizJson = New PtrJson
-                    raizJson = ptr
-                    Return ptr
+                    raizJson = raizJson.crearJSon(Constantes.R_JSRAIZ, .Item(1).Data.ToString.Replace("""", ""), .Item(1).Position.Line, .Item(1).Position.Column, CType(.Item(4).Data, ArrayList))
 
-                Case ProductionIndex.Atributos_Comma
-                    ' <atributos> ::= <atributos> ',' <atributo> 
+                Case ProductionIndex.Objsjs_Comma
+                    ' <objsJS> ::= <objsJS> ',' <objJS> 
                     ptr = New PtrJson
-                    Return ptr.addList(CType(.Item(0).Data, ArrayList), CType(.Item(2).Data, PtrJson))
+                    ptr = CType(.Item(2).Data, PtrJson)
+                    lista = New ArrayList
+                    lista = CType(.Item(0).Data, ArrayList)
+                    lista.Add(ptr)
+                    Return lista
 
-                Case ProductionIndex.Atributos
-                    ' <atributos> ::= <atributo> 
-                    ptr = New PtrJson
-                    Return ptr.generarList(CType(.Item(0).Data, PtrJson))
-
-                Case ProductionIndex.Atributo_String_Colon
-                    ' <atributo> ::= STRING ':' <valjson> 
-                    ptr = New PtrJson
-                    Return ptr.crearAtributo(.Item(0).Data.ToString.Replace("""", ""), .Item(0).Position.Line, .Item(0).Position.Column, CType(.Item(2).Data, PtrJson))
-
-                Case ProductionIndex.Valjson
-                    ' <valjson> ::= <json> 
+                Case ProductionIndex.Objsjs
+                    ' <objsJS> ::= <objJS> 
                     ptr = New PtrJson
                     ptr = CType(.Item(0).Data, PtrJson)
-                    Return ptr
-
-                Case ProductionIndex.Valjson_String
-                    ' <valjson> ::= STRING 
-                    ptr = New PtrJson
-                    Return ptr.crearHoja(.Item(0).Data.ToString.Replace("""", ""), .Item(0).Position.Line, .Item(0).Position.Column)
-                    
-                Case ProductionIndex.Valjson_Lbracket_Rbracket
-                    ' <valjson> ::= '[' <array> ']' 
-                    ptr = New PtrJson
-                    ptr = ptr.crearArr(Constantes.R_JSCOR, "[]", .Item(0).Position.Line, .Item(0).Position.Column, CType(.Item(1).Data, ArrayList))
-                    Return ptr
-
-                Case ProductionIndex.Array
-                    ' <array> ::= <ljson> 
                     lista = New ArrayList
-                    lista = CType(.Item(0).Data, ArrayList)
+                    lista = ptr.generarList(ptr)
                     Return lista
 
-                Case ProductionIndex.Array2
-                    ' <array> ::= <lstring> 
+                Case ProductionIndex.Objjs_String_Colon_Lbracket_Rbracket
+                    ' <objJS> ::= STRING ':' '[' <llasJS> ']' 
+                    ptr = New PtrJson
+                    ptr = ptr.crearJSon(Constantes.R_JSOBJ, .Item(0).Data.ToString.Replace("""", ""), .Item(0).Position.Line, .Item(0).Position.Column, CType(.Item(3).Data, ArrayList))
+                    Return ptr
+
+                Case ProductionIndex.Llasjs_Comma
+                    ' <llasJS> ::= <llasJS> ',' <llaJS> 
+                    ptr = New PtrJson
+                    ptr = CType(.Item(2).Data, PtrJson)
                     lista = New ArrayList
                     lista = CType(.Item(0).Data, ArrayList)
+                    lista.Add(ptr)
                     Return lista
 
-                Case ProductionIndex.Ljson_Comma
-                    ' <ljson> ::= <ljson> ',' <json> 
+                Case ProductionIndex.Llasjs
+                    ' <llasJS> ::= <llaJS> 
                     ptr = New PtrJson
-                    Return ptr.addList(CType(.Item(0).Data, ArrayList), CType(.Item(2).Data, PtrJson))
+                    ptr = CType(.Item(0).Data, PtrJson)
+                    lista = New ArrayList
+                    lista = ptr.generarList(ptr)
+                    Return lista
 
-                Case ProductionIndex.Ljson
-                    ' <ljson> ::= <json> 
+                Case ProductionIndex.Llajs_Lbrace_Rbrace
+                    ' <llaJS> ::= '{' <atbsJS> '}' 
                     ptr = New PtrJson
-                    Return ptr.generarList(CType(.Item(0).Data, PtrJson))
+                    ptr = ptr.crearJSon(Constantes.R_JSCOLL, "{}", .Item(0).Position.Line, .Item(0).Position.Column, CType(.Item(1).Data, ArrayList))
+                    Return ptr
 
-                Case ProductionIndex.Lstring_Comma_String
-                    ' <lstring> ::= <lstring> ',' STRING 
+                Case ProductionIndex.Atbsjs_Comma
+                    ' <atbsJS> ::= <atbsJS> ',' <atbJS> 
                     ptr = New PtrJson
-                    ptr = ptr.crearHoja(.Item(2).Data.ToString.Replace("""", ""), .Item(2).Position.Line, .Item(2).Position.Column)
-                    Return ptr.addList(CType(.Item(0).Data, ArrayList), ptr)
+                    ptr = CType(.Item(2).Data, PtrJson)
+                    lista = New ArrayList
+                    lista = CType(.Item(0).Data, ArrayList)
+                    lista.Add(ptr)
+                    Return lista
 
-                Case ProductionIndex.Lstring_String
-                    ' <lstring> ::= STRING
+                Case ProductionIndex.Atbsjs
+                    ' <atbsJS> ::= <atbJS> 
                     ptr = New PtrJson
-                    ptr = ptr.crearHoja(.Item(0).Data.ToString.Replace("""", ""), .Item(0).Position.Line, .Item(0).Position.Column)
-                    Return ptr.generarList(ptr)
+                    ptr = CType(.Item(0).Data, PtrJson)
+                    lista = New ArrayList
+                    lista = ptr.generarList(ptr)
+                    Return lista
 
+                Case ProductionIndex.Atbjs_String_Colon_String
+                    ' <atbJS> ::= STRING ':' STRING 
+                    ptr = New PtrJson
+                    ptr = ptr.crearAtri(.Item(0).Data.ToString.Replace("""", ""), .Item(2).Data.ToString.Replace("""", ""), .Item(0).Position.Line, .Item(0).Position.Column)
+                    Return ptr
 
                 Case ProductionIndex.Jslt_Ltjslcolontransformacion_Ruta_Eq_String_Version_Eq_String_Gt_Ltdivjslcolonfinalgt
                     ' <jslt> ::= '<jsl:transformacion' ruta '=' STRING version '=' STRING '>' <cuerpo> '</jsl:final>' 
+                    analisis = True
                     direccion = .Item(3).Data.ToString.Replace("""", "")
                     raizJsl = New Nodo
                     raizJsl = raizJsl.crearJSL(Constantes.SR_TRANSFORM, .Item(6).Data.ToString.Replace("""", ""), .Item(6).Position.Line, .Item(6).Position.Column, CType(.Item(8).Data, ArrayList))
@@ -631,7 +632,7 @@ Module MyParser
                     ' <plantilla> ::= '<jsl:plantilla' nombreObj '=' <obj> '>' <sentencias> '</jsl:plantilla>' 
                     nodo = New Nodo
                     nodo = nodo.crearJSL(Constantes.SR_PLANTILLA, "Plantilla", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column, CType(.Item(5).Data, ArrayList))
-                    nodo.pred(nodo, CType(.Item(3).Data, Nodo))
+                    nodo.pred(CType(.Item(3).Data, Nodo))
                     Return nodo
 
                 Case ProductionIndex.Aplantilla_Ltjslcolonplantillaminusaplicar_Seleccionar_Eq_Divgt
@@ -648,14 +649,14 @@ Module MyParser
                     ' <bfor> ::= '<jsl:para-cada' seleccionar '=' <obj> '>' <sentencias> '</jsl:para-cada>' 
                     nodo = New Nodo
                     nodo = nodo.crearJSL(Constantes.SR_FOR, "Para-cada", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column, CType(.Item(5).Data, ArrayList))
-                    nodo.pred(nodo, CType(.Item(3).Data, Nodo))
+                    nodo.pred(CType(.Item(3).Data, Nodo))
                     Return nodo
 
                 Case ProductionIndex.Fif_Ltjslcolonif_Condicion_Eq_Gt_Ltdivjslcolonifgt
                     ' <fif> ::= '<jsl:if' condicion '=' <expresion> '>' <sentencias> '</jsl:if>' 
                     nodo = New Nodo
                     nodo = nodo.crearJSL(Constantes.SR_IF, "If", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column, CType(.Item(5).Data, ArrayList))
-                    nodo.pred(nodo, CType(.Item(3).Data, Nodo))
+                    nodo.pred(CType(.Item(3).Data, Nodo))
                     Return nodo
 
                 Case ProductionIndex.Fswitch_Ltjslcolonenminuscasogt_Ltdivjslcolonenminuscasogt
@@ -686,7 +687,7 @@ Module MyParser
                     ' <caso> ::= '<jsl:de' condicion '=' <expresion> '>' <sentencias> '</jsl:de>' 
                     nodo = New Nodo
                     nodo = nodo.crearJSL(Constantes.SR_CASO, "De", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column, CType(.Item(5).Data, ArrayList))
-                    nodo.pred(nodo, CType(.Item(3).Data, Nodo))
+                    nodo.pred(CType(.Item(3).Data, Nodo))
                     Return nodo
 
                 Case ProductionIndex.Defecto_Ltjslcoloncualquierminusotrogt_Ltdivjslcoloncualquierminusotrogt
@@ -694,60 +695,82 @@ Module MyParser
                     nodo = New Nodo
                     Return nodo.crearJSL(Constantes.SR_DEFAULT, "Cualquier-otro", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column, CType(.Item(1).Data, ArrayList))
 
-                Case ProductionIndex.Obj
-                    ' <obj> ::= <var> <ruta> 
+                Case ProductionIndex.Obj                 
+                    ' <obj> ::= <var> 
                     nodo = New Nodo
-                    Return nodo.pred(CType(.Item(1).Data, Nodo), CType(.Item(0).Data, Nodo))
+                    nodo = CType(.Item(0).Data, Nodo)
+                    Return nodo
 
-                Case ProductionIndex.Obj_Atat
-                    ' <obj> ::= '@@' <var> <ruta> 
+                Case ProductionIndex.Obj_Atat_Id
+                    ' <obj> ::= '@@' ID 
                     nodo = New Nodo
-                    Return nodo.predAcceso(CType(.Item(2).Data, Nodo), CType(.Item(1).Data, Nodo), Constantes.SR_POR_A)
+                    nodo = nodo.crearAcceso(Constantes.SR_COLLECTION, .Item(1).Data.ToString, .Item(1).Position.Line, .Item(1).Position.Column)
+                    Return nodo
+
+                Case ProductionIndex.Obj_At_Id
+                    ' <obj> ::= '@' ID <ruta> 
+                    Dim var As Nodo = New Nodo
+                    var = var.crearAcceso(Constantes.SR_VAR, .Item(1).Data.ToString, .Item(1).Position.Line, .Item(1).Position.Column)
+                    nodo = New Nodo
+                    nodo = CType(.Item(2).Data, Nodo)
+                    nodo.pred(var)
+                    Return nodo
 
                 Case ProductionIndex.Obj_At
-                    ' <obj> ::= '@' <var> <ruta> 
-                    nodo = New Nodo
-                    Return nodo.predAcceso(CType(.Item(2).Data, Nodo), CType(.Item(1).Data, Nodo), Constantes.SR_POR_A)
-
-                Case ProductionIndex.Obj_At2
                     ' <obj> ::= '@' 
                     nodo = New Nodo
-                    Return nodo.crearAcceso(Constantes.SR_RAIZ, "@", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column)
+                    nodo = nodo.crearAcceso(Constantes.SR_RAIZ, .Item(0).Data.ToString, .Item(0).Position.Line, .Item(0).Position.Column)
+                    Return nodo
 
                 Case ProductionIndex.Obj_Dotdot
                     ' <obj> ::= '..' 
                     nodo = New Nodo
-                    Return nodo.crearAcceso(Constantes.SR_PADRE, "..", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column)
+                    nodo = nodo.crearAcceso(Constantes.SR_PADRE, .Item(0).Data.ToString, .Item(0).Position.Line, .Item(0).Position.Column)
+                    Return nodo
 
                 Case ProductionIndex.Obj_Dot
                     ' <obj> ::= '.' 
                     nodo = New Nodo
-                    Return nodo.crearAcceso(Constantes.SR_ACTUAL, ".", Parser.CurrentPosition.Line, Parser.CurrentPosition.Column)
+                    nodo = nodo.crearAcceso(Constantes.SR_ACTUAL, .Item(0).Data.ToString, .Item(0).Position.Line, .Item(0).Position.Column)
+                    Return nodo
 
-                Case ProductionIndex.Ruta_At
-                    ' <ruta> ::= '@' <var> <ruta> 
+                Case ProductionIndex.Ruta_At_Id
+                    ' <ruta> ::= '@' ID <ruta> 
+                    Dim var As Nodo = New Nodo
+                    var = var.crearAcceso(Constantes.SR_VAR, .Item(1).Data.ToString, .Item(1).Position.Line, .Item(1).Position.Column)
                     nodo = New Nodo
-                    Return nodo.predAcceso(CType(.Item(2).Data, Nodo), CType(.Item(1).Data, Nodo), Constantes.SR_POR_A)
+                    nodo = CType(.Item(2).Data, Nodo)
+                    nodo.pred(var)
+                    Return nodo
 
-                Case ProductionIndex.Ruta_Atat
-                    ' <ruta> ::= '@@' <var> <ruta> 
+                Case ProductionIndex.Ruta_At_Id_Lbracket_Rbracket
+                    ' <ruta> ::= '@' ID '[' <expresion> ']' 
+                    Dim arr As Nodo = New Nodo
+                    arr = arr.crearAcceso(Constantes.SR_ARR, .Item(1).Data.ToString, .Item(1).Position.Line, .Item(1).Position.Column)
+                    arr.add(CType(.Item(3).Data, Nodo))
                     nodo = New Nodo
-                    Return nodo.predAcceso(CType(.Item(2).Data, Nodo), CType(.Item(1).Data, Nodo), Constantes.SR_POR_AA)
+                    nodo = nodo.crearAcceso()
+                    nodo.add(arr)
+                    Return nodo
 
                 Case ProductionIndex.Ruta
                     ' <ruta> ::=  
                     nodo = New Nodo
-                    Return nodo.crearAcceso()
+                    nodo = nodo.crearAcceso()
+                    Return nodo
 
                 Case ProductionIndex.Var_Id_Lbracket_Rbracket
                     ' <var> ::= ID '[' <expresion> ']' 
                     nodo = New Nodo
-                    Return nodo.crearArr(Constantes.SR_DIRECTO, .Item(0).Data.ToString, Parser.CurrentPosition.Line, Parser.CurrentPosition.Column, CType(.Item(2).Data, Nodo))
+                    nodo = nodo.crearAcceso(Constantes.SR_ARR, .Item(0).Data.ToString, .Item(0).Position.Line, .Item(0).Position.Column)
+                    nodo.add(CType(.Item(2).Data, Nodo))
+                    Return nodo
 
                 Case ProductionIndex.Var_Id
                     ' <var> ::= ID 
                     nodo = New Nodo
-                    Return nodo.crearVar(Constantes.SR_DIRECTO, .Item(0).Data.ToString, Parser.CurrentPosition.Line, Parser.CurrentPosition.Column)
+                    nodo = nodo.crearAcceso(Constantes.SR_VAR, .Item(0).Data.ToString, .Item(0).Position.Line, .Item(0).Position.Column)
+                    Return nodo
 
                 Case ProductionIndex.Expresion
                     ' <expresion> ::= <log1> 

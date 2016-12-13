@@ -38,26 +38,23 @@ Comment Line  = '##'
 !   GRAMATICA - JSON
 !----------------------------------------------------------------------------!
 
-<json>          ::=     '{' <atributos> '}'
-      
-<atributos>     ::=     <atributos> ',' <atributo>
-                 |      <atributo>
+<json>          ::=     '{' STRING ':' '{' <objsJS> '}' '}'
+
+<objsJS>        ::=     <objsJS> ',' <objJS>
+                 |      <objJS> 
+                 
+<objJS>         ::=     STRING ':' '[' <llasJS> ']'
+                 
+<llasJS>        ::=     <llasJS> ',' <llaJS>
+                 |      <llaJS>    
+                     
+<llaJS>         ::=     '{' <atbsJS> '}'
+                 
+<atbsJS>        ::=     <atbsJS> ',' <atbJS>
+                 |      <atbJS>
              
-<atributo>      ::=     STRING ':' <valjson>
+<atbJS>         ::=     STRING ':' STRING
        
-<valjson>       ::=     <json>
-                 |      STRING
-                 |      '[' <array> ']'  
-                 
-<array>         ::=     <ljson>
-                 |      <lstring>
- 
-<ljson>         ::=     <ljson> ',' <json>
-                 |      <json>
-                
-<lstring>       ::=     <lstring> ',' STRING
-                 |      STRING
-                 
 !----------------------------------------------------------------------------!
 !   GRAMATICA - JSLT
 !----------------------------------------------------------------------------!
@@ -142,15 +139,15 @@ Comment Line  = '##'
 !----------------------------------------------------------------------------!
 !   Objetos
 
-<obj>           ::=     <var> <ruta>
-                 |      '@@' <var> <ruta>    
-                 |      '@' <var> <ruta>
+<obj>           ::=     <var>
+                 |      '@@' ID    
+                 |      '@' ID <ruta>
                  |      '@'
                  |      '..'
                  |      '.'
 
-<ruta>          ::=     '@' <var> <ruta>
-                 |      '@@' <var> <ruta>          
+<ruta>          ::=     '@' ID <ruta>
+                 |      '@' ID '[' <expresion> ']' 
                  |                      
 
 <var>           ::=     ID '[' <expresion> ']'       

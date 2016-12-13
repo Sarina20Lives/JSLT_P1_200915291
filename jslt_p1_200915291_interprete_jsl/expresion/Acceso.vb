@@ -19,27 +19,54 @@
             'Error, Todo padre no es un valor
             Return resultado
         End If
-        If (expresion.subrol = Constantes.SR_ACTUAL) Then
-            If (CType(entorno.ambito, PtrJson).rol = Constantes.R_JSVAL) Then
-                Return definirVal(CType(entorno.ambito, PtrJson).valor)
-            End If
-            'Error, el ambito actual no es un valor
+        If (expresion.subrol = Constantes.SR_COLLECTION) Then
+            'Error, Una coleccion no posee un valor puntual
             Return resultado
         End If
-        If (expresion.subrol = Constantes.SR_RUTA) Then
-            'Caso de una posible variable
-            If (expresion.hijos.Count = 1) Then
-                Dim nodo As Nodo = expresion.getHijo(0)
-                If (nodo.rol = Constantes.R_VAR And nodo.subrol = Constantes.SR_DIRECTO) Then
-                    Return obtenerValor(nodo.cad)
-                End If
+        If (expresion.subrol = Constantes.SR_ACTUAL) Then
+            Dim val As String = CType(entorno.ambito, PtrJson).getVal()
+            If (val = "$#$ERROR$#$") Then
+                'Error, El ambito actual no es un atributo
+                Return resultado
             End If
-            'Todos los demás casos se deben buscar en Json
+            Return definirVal(val)
+        End If
+        If (expresion.subrol = Constantes.SR_VAR) Then
+            Return obtenerValor(expresion.cad)
+        End If
+        If (expresion.subrol = Constantes.SR_ARR) Then
+            Return obtenerValor(expresion.cad, expresion.getHijo(0))
+        End If
+        If (expresion.subrol = Constantes.SR_RUTA) Then
+            'Resolver Ruta
+            If (expresion.hijos.Count <> 3) Then
+                'La ruta no hace referencia a un atributo
+                Return resultado
+            End If
+
         End If
 
         Return resultado
     End Function
 
+
+    Public Function obtenerValor(ByVal nombre As String, ByVal pos As Nodo)
+        Dim resultado As Resultado = New Resultado
+        Dim posicion As Resultado = New Resultado
+        Dim exp As Expresion = New Expresion
+        Dim casteo As Casteos = New Casteos
+        posicion = exp.resolver(entorno, pos)
+        If (posicion.tipo <> Constantes.T_ENTERO) Then
+            'Error, se requiere un valor entero para la posición
+            Return resultado
+        End If
+        Dim val As String = CType(entorno.ambito, PtrJson).getVal(nombre, casteo.castStrToInt(posicion.valor))
+        If (val = "$#$ERROR$#$") Then
+            'Error, El ambito actual no posee el atributo buscado
+            Return Resultado
+        End If
+        Return definirVal(val)
+    End Function
 
     Public Function obtenerValor(ByVal nombre As String)
         Dim resultado As Resultado = New Resultado
@@ -58,9 +85,14 @@
                 Return resultado
             End If
         Next
-        ' Falta el caso de buscar en ambito
 
-        Return resultado
+        Dim val As String = CType(entorno.ambito, PtrJson).getVal(nombre, -1)
+        If (val = "$#$ERROR$#$") Then
+            'Error, El ambito actual no posee el atributo buscado
+            Return resultado
+        End If
+        Return definirVal(val)
+
     End Function
 
     Public Function definirVal(ByVal valor As String)
