@@ -12,13 +12,12 @@
         Dim direccion As String = ""
         Dim raizJsl As Nodo = New Nodo
         Dim raizJson As PtrJson = New PtrJson
+        Dim manArch As ManejoArchivos = New ManejoArchivos
         Parse(Cadena, analisis, raizJson, raizJsl, direccion)
         If (analisis) Then
             Dim transform As Transform = New Transform
-            transform.resolverTransform(raizJsl)
-            Return
+            transform.resolverTransform(raizJsl, direccion)
         End If
-        MsgBox(raizJson.nombre)
     End Sub
 
 End Class

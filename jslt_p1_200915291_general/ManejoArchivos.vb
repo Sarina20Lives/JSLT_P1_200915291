@@ -4,7 +4,7 @@
 
     Public Function leer(ByVal directorio As String)
         Dim contActual As String = ""
-        Dim sr As New System.IO.StreamReader(Constantes.DIRECTORIO)
+        Dim sr As New System.IO.StreamReader(directorio)
         contActual = sr.ReadToEnd()
         sr.Close()
         Return contActual

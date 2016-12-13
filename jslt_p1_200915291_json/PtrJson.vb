@@ -60,40 +60,76 @@
     End Function
 
 
-    ' ID[pos] y ID PARA RETORNO DE VALOR DE ATRIBUTO
-    Public Function getVal(ByVal nombre As String, ByVal pos As Integer)
-        Dim hijo As PtrJson
-        If (Me.rol = Constantes.R_JSCOLL And pos = -1) Then
-            Return Me.getVal(nombre)
+    Public Function getValDeRuta(ByVal raiz As String, ByVal obj As String, ByVal atri As String, ByVal pos As Integer)
+        Dim resultado As Resultado = New Resultado
+        If (Me.nombre <> raiz) Then
+            Return resultado
         End If
-        If (Me.rol = Constantes.R_JSOBJ) Then
-            hijo = getHijo(pos)
-            If (hijo Is Nothing) Then
-                Return "$#$ERROR$#$"
-            End If
-            Return hijo.getVal(nombre)
+        Dim objs As ArrayList = Me.getHijos(obj)
+        Dim atris As ArrayList = New ArrayList
+        Dim objeto As PtrJson
+        For Each objeto In objs
+            atris.AddRange(objeto.getHijos(atri))
+        Next
+        If (pos < atris.Count) Then
+            Return CType(atris.Item(pos), PtrJson).getValActual()
         End If
-        Return "$#$ERROR$#$"
+        Return resultado
     End Function
 
-    '. VALOR ACTUAL
-    Public Function getVal()
-        If (Me.rol = Constantes.R_JSATRI) Then
-            Return Me.valor
+    Public Function getValDeObj(ByVal nombre As String, ByVal pos As Integer)
+        Dim resultado As Resultado = New Resultado
+        If (Me.rol <> Constantes.R_JSOBJ) Then
+            Return resultado
         End If
-        Return "$#$ERROR$#$"
+        Dim hijos As ArrayList = getHijos(nombre)
+        If (hijos.Count > pos) Then
+            Return CType(hijos.Item(pos), PtrJson).getValActual()
+        End If
+        Return resultado
     End Function
 
 
-    Public Function getVal(ByVal nombre As String)
+    Public Function getValDeColl(ByVal nombre As String)
+        Dim resultado As Resultado = New Resultado
+        If (Me.rol <> Constantes.R_JSCOLL) Then
+            Return Resultado
+        End If
         Dim hijo As PtrJson
         For Each hijo In Me.hijos
             If (hijo.nombre = nombre) Then
-                Return hijo.valor
+                Return definirVal(hijo.valor)
             End If
         Next
-        Return "$#$ERROR$#$"
+        Return resultado
     End Function
+
+    Public Function getValActual()
+        Dim resultado As Resultado = New Resultado
+        If (Me.rol <> Constantes.R_JSATRI) Then
+            Return resultado
+        End If
+        Return definirVal(Me.valor)
+    End Function
+
+
+    Public Function definirVal(ByVal valor As String)
+        Dim resultado As Resultado = New Resultado
+        Dim temp As String = valor.Replace(".", ",")
+        If (IsNumeric(temp)) Then
+            resultado.valor = temp
+            resultado.tipo = Constantes.T_ENTERO
+            If (valor.Contains(",")) Then
+                resultado.tipo = Constantes.T_DOBLE
+            End If
+            Return resultado
+        End If
+        resultado.valor = valor
+        resultado.tipo = Constantes.T_CADENA
+        Return resultado
+    End Function
+
+
 
     'ID[POS] PARA CAMBIO DE AMBITO
     Public Function getHijo(ByVal nombre As String, ByVal pos As Integer)
@@ -114,7 +150,7 @@
     Public Function getHijos(ByVal nombre As String)
         Dim lista As ArrayList = New ArrayList
         Dim hijo As PtrJson
-        If (Me.rol = Constantes.R_JSRAIZ Or Me.rol = Constantes.SR_COLLECTION) Then
+        If (Me.rol = Constantes.R_JSRAIZ Or Me.rol = Constantes.R_JSCOLL) Then
             For Each hijo In Me.hijos
                 If (hijo.nombre = nombre) Then
                     lista.Add(hijo)

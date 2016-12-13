@@ -6,30 +6,10 @@
 
         'Actualizando contexto y ambito
         entorno = New Entorno
-        entorno.ctxGlobal = ent.ctxGlobal
-        entorno.ctxLocal = ent.ctxLocal
-        entorno.ambito = ent.ambito
-        entorno.raiz = ent.raiz
+        entorno = entorno.crearEntorno(ent)
 
-        If (expresion.subrol = Constantes.SR_RAIZ) Then
-            'Error, la raiz no es un valor
-            Return resultado
-        End If
-        If (expresion.subrol = Constantes.SR_PADRE) Then
-            'Error, Todo padre no es un valor
-            Return resultado
-        End If
-        If (expresion.subrol = Constantes.SR_COLLECTION) Then
-            'Error, Una coleccion no posee un valor puntual
-            Return resultado
-        End If
         If (expresion.subrol = Constantes.SR_ACTUAL) Then
-            Dim val As String = CType(entorno.ambito, PtrJson).getVal()
-            If (val = "$#$ERROR$#$") Then
-                'Error, El ambito actual no es un atributo
-                Return resultado
-            End If
-            Return definirVal(val)
+            Return entorno.ambito.getValActual()
         End If
         If (expresion.subrol = Constantes.SR_VAR) Then
             Return obtenerValor(expresion.cad)
@@ -38,12 +18,7 @@
             Return obtenerValor(expresion.cad, expresion.getHijo(0))
         End If
         If (expresion.subrol = Constantes.SR_RUTA) Then
-            'Resolver Ruta
-            If (expresion.hijos.Count <> 3) Then
-                'La ruta no hace referencia a un atributo
-                Return resultado
-            End If
-
+            Return obtenerValor(expresion)
         End If
 
         Return resultado
@@ -60,12 +35,7 @@
             'Error, se requiere un valor entero para la posición
             Return resultado
         End If
-        Dim val As String = CType(entorno.ambito, PtrJson).getVal(nombre, casteo.castStrToInt(posicion.valor))
-        If (val = "$#$ERROR$#$") Then
-            'Error, El ambito actual no posee el atributo buscado
-            Return Resultado
-        End If
-        Return definirVal(val)
+        Return entorno.ambito.getValDeObj(nombre, casteo.castStrToInt(posicion.valor))
     End Function
 
     Public Function obtenerValor(ByVal nombre As String)
@@ -85,31 +55,29 @@
                 Return resultado
             End If
         Next
-
-        Dim val As String = CType(entorno.ambito, PtrJson).getVal(nombre, -1)
-        If (val = "$#$ERROR$#$") Then
-            'Error, El ambito actual no posee el atributo buscado
-            Return resultado
-        End If
-        Return definirVal(val)
-
+        Return entorno.ambito.getValDeColl(nombre)
     End Function
 
-    Public Function definirVal(ByVal valor As String)
+
+    Public Function obtenerValor(ByVal expresion As Nodo)
         Dim resultado As Resultado = New Resultado
-        Dim temp As String = valor.Replace(".", ",")
-        If (IsNumeric(temp)) Then
-            resultado.valor = temp
-            resultado.tipo = Constantes.T_ENTERO
-            If (valor.Contains(",")) Then
-                resultado.tipo = Constantes.T_DOBLE
-            End If
+        If (expresion.hijos.Count <> 3) Then
             Return resultado
         End If
-        resultado.valor = valor
-        resultado.tipo = Constantes.T_CADENA
-        Return resultado
+        Dim exp As Expresion = New Expresion
+        Dim casteo As Casteos = New Casteos
+        Dim raiz As Nodo = expresion.getHijo(0)
+        Dim obj As Nodo = expresion.getHijo(1)
+        Dim atri As Nodo = expresion.getHijo(2)
+        If (raiz.subrol <> Constantes.SR_VAR Or obj.subrol <> Constantes.SR_VAR Or atri.subrol <> Constantes.SR_ARR) Then
+            Return resultado
+        End If
+        Dim posicion As Resultado = exp.resolver(entorno, atri.getHijo(0))
+        If (posicion.tipo <> Constantes.T_ENTERO) Then
+            'Error, se requiere un valor entero para la posición
+            Return resultado
+        End If
+        Return entorno.raiz.getValDeRuta(raiz.cad, obj.cad, atri.cad, casteo.castStrToInt(posicion.valor))
     End Function
-
 
 End Class

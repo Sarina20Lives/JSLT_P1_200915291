@@ -373,7 +373,7 @@ Module MyParser
                     camino = analisis
                     rJsl = raizJsl
                     rJson = raizJson
-                    direccion = dir
+                    dir = direccion
                     Done = True
                     Accepted = True
 
