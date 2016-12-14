@@ -20,3 +20,6 @@ C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\obj\Debug
 C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.Form1.resources
 C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.Resources.resources
 C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.vbproj.GenerateResource.Cache
+C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\bin\Debug\FastColoredTextBox.dll
+C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\bin\Debug\FastColoredTextBox.xml
+C:\Users\Esvin\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\obj\Debug\JSLT_P1_200915291.Pestania.resources

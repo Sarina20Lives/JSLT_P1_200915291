@@ -5,10 +5,7 @@
     Public Sub resolverPlantilla(ByRef ent As Entorno, ByVal raiz As Nodo)
         'Actualizando contexto y ambito
         entorno = New Entorno
-        entorno.ctxGlobal = ent.ctxGlobal
-        entorno.ctxLocal = ent.ctxLocal
-        entorno.ambito = ent.ambito
-        entorno.raiz = ent.raiz
+        entorno = entorno.crearEntorno(ent)
 
         Dim noprimero As Boolean = False
         Dim sentencia As Sentencia = Nothing

@@ -2,7 +2,7 @@
 
     Public Sub resolverDeclare(ByRef ent As Entorno, ByVal nodo As Nodo, ByVal gbl As Boolean)
         Dim var As Simbolo = New Simbolo
-        var.rol = Constantes.R_VAR
+        var.rol = Constantes.SR_VAR
         var.tipo = nodo.tipo
         var.nombre = nodo.cad
         var.instancia = False

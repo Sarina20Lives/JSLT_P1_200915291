@@ -1,0 +1,31 @@
+﻿<doc>
+	<brackets left="&lt;" right="&gt;"/>
+
+	<style name="Maroon" color="Maroon"/>
+	<style name="Yellow" color="#ffd600"/>
+	<style name="Gray" color="Gray"/>
+	<style name="Purple" color="#4a148c"/>
+	<style name="Orange" color="#e65100"/>
+	<style name="Green" color="Green" fontStyle="Bold"/>
+	<style name="Blue" color="Blue"/>
+	<style name="Red" color="Red" backColor="#f5f5e5"/>
+
+	<rule style="Yellow">\".*?\"</rule>
+	<rule style="Gray" options="Multiline">##.*$</rule>
+	<rule style="Gray" options="Singleline">(#\*.*?\*#)|(#\*.*)</rule>
+	<rule style="Gray" options="Singleline,RightToLeft">(#\*.*?\*#)|(.*\*#)</rule>
+	<rule style="Purple">\b[0-9]*\.*[0-9]+\b</rule>
+	<rule style="Green">\b[A-Za-z][\w_]*\b</rule>
+	<rule style="Green">[@"@@"\.".."]</rule>
+	<rule style="Orange">\bentero\b|\bdoble\b|\bboolean\b|\bcaracter\b|\bcadena\b|\bdiv\b|\bborder\b|\bbgcolor\b|\bwidth\b|\bheight\b|\bruta\b|\bversion\b|\bseleccionar\b|\bvariable\b|\bnombreObj\b|\bcondicion\b|\bvalor\b</rule>
+	<rule style="Blue">&lt;|"/&gt;"|"&lt;/"|&gt;</rule>
+	<rule style="Maroon">&lt;(?&lt;range&gt;[-:\w\d]+?)[\s/&gt;]</rule>
+	<rule style="Maroon">&lt;/(?&lt;range&gt;[-:\w\d]+?)&gt;</rule>
+	<rule style="Red" options="Multiline">(?&lt;range&gt;\S+?)='[^']*'|(?&lt;range&gt;\S+)="[^"]*"|(?&lt;range&gt;\S+)=\S+</rule>
+
+	<folding 
+		start="&lt;jsl:|&lt;html&gt;|&lt;body&gt;|&lt;head&gt;|&lt;title&gt;|&lt;table|&lt;tr" 
+		finish="&lt;/jsl:|&lt;/html&gt;|&lt;/body&gt;|&lt;/head&gt;|&lt;/title&gt;|&lt;/table|&lt;/tr" 
+		options="IgnoreCase"/>
+</doc>
+

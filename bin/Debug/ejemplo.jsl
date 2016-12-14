@@ -1,0 +1,10 @@
+﻿##Ejemplo con comentarios
+<jsl:transformacion ruta="" version="">
+    <jsl:variable cadena= cad/>
+    <jsl:plantilla nombreObj =@>
+        <jsl:asignar variable = cad valor = "Esvin y Sarina"/>
+        <html>
+            <h1> <jsl:valor-de seleccionar = cad/> </h1>
+        </html>
+    </jsl:plantilla>
+</jsl:final>

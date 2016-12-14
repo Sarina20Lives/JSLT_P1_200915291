@@ -4,10 +4,8 @@
     Public Sub resolver(ByRef ent As Entorno, ByVal sentencia As Nodo)
         'Actualizando contexto y ambito
         entorno = New Entorno
-        entorno.ctxGlobal = ent.ctxGlobal
-        entorno.ctxLocal = ent.ctxLocal
-        entorno.ambito = ent.ambito
-        entorno.raiz = ent.raiz
+        entorno = entorno.crearEntorno(ent)
+
         Select Case sentencia.rol
             Case Constantes.R_HTML
                 Dim html As EtqHtml = New EtqHtml
@@ -15,6 +13,7 @@
             Case Constantes.R_JSL
                 resolverJsl(sentencia)
         End Select
+
     End Sub
 
     Public Sub resolverJsl(ByVal sentencia As Nodo)

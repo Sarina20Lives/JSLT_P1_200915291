@@ -1,24 +1,22 @@
 ﻿Public Class Constantes
 
-    Public Const DIRECTORIO As String = "C:\Users\sarina\Documents\Visual Studio 2012\Projects\JSLT_P1_200915291\JSLT_P1_200915291\salida.html"
+    Public Const DIRECTORIO As String = "C:\Users\Esvin\Desktop\salida.html"
 
     Public Const ERR As Integer = -1
 
     'ROL
     Public Const R_OPERADOR As Integer = 2
     Public Const R_ACCESO As Integer = 4
-    Public Const R_VAR As Integer = 6
-    Public Const R_ARR As Integer = 8
     Public Const R_EXPRESION As Integer = 10
     Public Const R_LOGICA As Integer = 12
     Public Const R_RELACIONAL As Integer = 14
     Public Const R_ARITMETICA As Integer = 16
     Public Const R_HTML As Integer = 18
     Public Const R_JSL As Integer = 20
-    Public Const R_JSCOR As Integer = 22
-    Public Const R_JSLLA As Integer = 24
-    Public Const R_JSATR As Integer = 26
-    Public Const R_JSVAL As Integer = 28
+    Public Const R_JSRAIZ As Integer = 22
+    Public Const R_JSOBJ As Integer = 24
+    Public Const R_JSCOLL As Integer = 26
+    Public Const R_JSATRI As Integer = 28
 
     'SUBROL
     Public Const SR_ENTERO As Integer = 0
@@ -72,10 +70,9 @@
     Public Const SR_TD As Integer = 88
 
     ' Subroles para variables y arreglos
-    Public Const SR_DIRECTO As Integer = 90
-    Public Const SR_POR_A As Integer = 92
-    Public Const SR_POR_AA As Integer = 94
-
+    Public Const SR_VAR As Integer = 90
+    Public Const SR_ARR As Integer = 92
+    Public Const SR_COLLECTION As Integer = 94
     Public Const SR_RAIZ As Integer = 96
     Public Const SR_PADRE As Integer = 98
     Public Const SR_ACTUAL As Integer = 100

@@ -1,5 +1,6 @@
 ﻿Public Class Casteos
 
+
     Public Function getCasteo(ByVal tipoReq As Integer, ByVal obtenido As Resultado)
         Dim resultado As Resultado = New Resultado
         If (tipoReq = obtenido.tipo) Then
