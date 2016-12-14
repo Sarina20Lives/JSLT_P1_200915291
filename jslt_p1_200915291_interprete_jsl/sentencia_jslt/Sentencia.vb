@@ -29,6 +29,8 @@
             Case Constantes.SR_POS_INC
                 asignacion.resolverPosInc(entorno, sentencia)
             Case Constantes.SR_FOR
+                Dim bfor As BucleFor = New BucleFor
+                bfor.resolverFor(entorno, sentencia)
             Case Constantes.SR_IF
                 Dim fif As FlujoIf = New FlujoIf
                 fif.resolverIf(entorno, sentencia)

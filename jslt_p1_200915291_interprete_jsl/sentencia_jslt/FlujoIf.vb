@@ -5,10 +5,7 @@
     Public Sub resolverIf(ByRef ent As Entorno, ByVal nodo As Nodo)
         'Actualizando contexto y ambito
         entorno = New Entorno
-        entorno.ctxGlobal = ent.ctxGlobal
-        entorno.ctxLocal = ent.ctxLocal
-        entorno.ambito = ent.ambito
-        entorno.raiz = ent.raiz
+        entorno = entorno.crearEntorno (ent)
         Dim exp As Expresion = New Expresion
         Dim casteo As Casteos = New Casteos
         Dim resultado As Resultado = exp.resolver(entorno, nodo.getHijo(0))
